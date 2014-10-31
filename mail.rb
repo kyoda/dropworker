@@ -5,6 +5,8 @@ require "./conf.rb"
 class PostMail
 
   @@data = nil
+  @@count = 0
+  @@limit = 10
 
   def initialize(conf_data)
 
@@ -13,24 +15,30 @@ class PostMail
   end
 
 
-  def sendMail(content = nil)
+  def sendMail(name = 'test', code = '0000', pdf = 'test')
 
-    mail = Mail.new do
+    if @@count < @@limit then
 
-    from    @@data['mail']['from']
-    to      @@data['mail']['to'][0]
-    cc      @@data['mail']['to'][1]
-    subject name + "(" + code + ")" + @@data['search_word'][0]
-    body    pdf
-    charset = "UTF-8"
+      mail = Mail.new do
+
+      from    @@data['mail']['from']
+      to      @@data['mail']['to'][0]
+#cc      @@data['mail']['to'][1]
+      subject name + "(" + code + ")" + @@data['search_word'][0]
+      body    pdf
+      charset = "UTF-8"
+
+      end
+
+      mail.delivery_method(:smtp,
+          address:        @@data['mail']['host'], 
+          port:           25,
+          )
+      mail.deliver
+
+      @@count += 1
 
     end
-
-    mail.delivery_method(:smtp,
-        address:        @@data['mail']['host'], 
-        port:           25,
-        )
-    mail.deliver
 
   end
 
