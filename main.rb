@@ -1,4 +1,8 @@
 require 'rubygems'
+require 'nokogiri'
+require 'open-uri'
+require 'psych'
+require 'pdf/reader'
 require './conf.rb'
 require './sql.rb'
 require './mail.rb'
