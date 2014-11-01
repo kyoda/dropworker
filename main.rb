@@ -5,11 +5,7 @@ require './mail.rb'
 
 
 ### DATA INIT
-
 data = ID.getInitData()
-
-
-
 
 def mainProcess(data, time, code, name, pdf_url)
 
@@ -21,9 +17,10 @@ def mainProcess(data, time, code, name, pdf_url)
     pdf = page.text
   end
 
-
+  #db
   Company.create(time: time, code: code, name: name, url: pdf_url, data: pdf)
 
+  #mail
   m = PostMail.new(data)
   m.sendMail()
 
@@ -34,7 +31,6 @@ end
 
 
 ### URL ANALYZE
-
 charset = nil
 html = open(data['url']) do |f|
   charset = f.charset 
@@ -53,11 +49,8 @@ end
 
 
 ### HTML ANALYZE
-
 doc = Nokogiri::HTML.parse(html, nil, charset)
-
 doc.xpath('//table/tbody/tr').each do |l|
-
 
   if l.css('td')[3].content.include?(data['search_word'][0]) then
 
@@ -69,29 +62,15 @@ doc.xpath('//table/tbody/tr').each do |l|
     p time + ": " + name + ": " + l.css('td')[3].content.strip
     com = Company.where(day: Date::today.to_s)
 
-    if com.empty? then
 
+    if com.any?{|a| a.name === name} then
+      p "Already there"
+    else
       p "insert..."
       mainProcess(data, time, code, name, pdf_url)
       p "finish"
-
-    else
-
-      com.each do |db_data| 
-
-        if ! db_data['name'].include?(name) then
-
-          p "insert..."
-          mainProcess(data, time, code, name, pdf_url)
-          p "finish"
-
-        else 
-          p "Already there"
-        end
-
-      end
-
     end
+
 
   else
     #p "Nothing..."
