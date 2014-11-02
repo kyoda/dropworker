@@ -8,9 +8,7 @@ class InitData
   end
 
   def getInitData
-
-    return @@data
-
+    @@data
   end
 
 
