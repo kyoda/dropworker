@@ -11,7 +11,7 @@ require './mail.rb'
 ### DATA INIT
 data = ID.getInitData()
 
-def mainProcess(data, time, code, name, pdf_url)
+def mainProcess(data, time, code, name, pdf_url, post_day)
 
   io = open(pdf_url, "rb")
   reader = PDF::Reader.new(io)
@@ -22,7 +22,7 @@ def mainProcess(data, time, code, name, pdf_url)
   end
 
   #db
-  Company.create(time: time, code: code, name: name, url: pdf_url, data: pdf)
+  Company.create(time: time, code: code, name: name, url: pdf_url, data: pdf, day: post_day)
 
   #mail
   m = PostMail.new(data)
@@ -46,6 +46,10 @@ doc = Nokogiri::HTML.parse(html, nil, charset)
 
 # frame
 frame_url = File.dirname(data['url']) + "/" + doc.css('frame')[1]['src']
+#frame_url = data['test_url']
+
+post_day = File.basename(frame_url).split(".")[0].split("_")[3].to_date.to_s
+
 html = open(frame_url) do |f|
   charset = f.charset 
   f.read
@@ -64,14 +68,14 @@ doc.xpath('//table/tbody/tr').each do |l|
     pdf_url = data['pre_url'] + l.css('td a').attribute('href').value
 
     p time + ": " + name + ": " + l.css('td')[3].content.strip
-    com = Company.where(day: Date::today.to_s)
+    com = Company.where(day: post_day)
 
 
     if com.any?{|a| a.name === name} then
       p "Already there"
     else
       p "insert..."
-      mainProcess(data, time, code, name, pdf_url)
+      mainProcess(data, time, code, name, pdf_url, post_day)
       p "finish"
     end
 
