@@ -46,7 +46,7 @@ doc = Nokogiri::HTML.parse(html, nil, charset)
 
 # frame
 frame_url = File.dirname(data['url']) + "/" + doc.css('frame')[1]['src']
-#frame_url = data['test_url']
+#frame_url = data['pre_test_url'] + "20141029" + ".html"
 
 post_day = File.basename(frame_url).split(".")[0].split("_")[3].to_date.to_s
 
