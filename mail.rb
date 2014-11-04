@@ -6,7 +6,7 @@ class PostMail
 
   @@data = nil
   @@count = 0
-  @@limit = 10
+  @@limit = 20
 
   def initialize(conf_data)
 
@@ -23,7 +23,7 @@ class PostMail
 
       from    @@data['mail']['from']
       to      @@data['mail']['to'][0]
-#cc      @@data['mail']['to'][1]
+      cc      @@data['mail']['to'][1]
       subject name + "(" + code + ")" + @@data['search_word'][0]
       body    pdf
       charset = "UTF-8"

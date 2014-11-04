@@ -15,10 +15,17 @@ def mainProcess(data, time, code, name, pdf_url, post_day)
 
   io = open(pdf_url, "rb")
   reader = PDF::Reader.new(io)
-
   pdf = ""
-  reader.pages.each do |page|
-    pdf = page.text
+
+  begin
+
+    reader.pages.each do |page|
+      pdf = page.text
+    end
+
+  rescue
+    pdf = "pdf error"
+    p "pdf error"
   end
 
   #db
@@ -26,7 +33,7 @@ def mainProcess(data, time, code, name, pdf_url, post_day)
 
   #mail
   m = PostMail.new(data)
-  m.sendMail()
+  m.sendMail(name, code, pdf)
 
 
 end
