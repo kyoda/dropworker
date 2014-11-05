@@ -24,7 +24,7 @@ def mainProcess(data, time, code, name, pdf_url, post_day)
     end
 
   rescue
-    pdf = "pdf error"
+    pdf = "pdf error\n"
     p "pdf error"
   end
 
